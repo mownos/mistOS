@@ -29,7 +29,9 @@ bindkey '\eOA' history-substring-search-up # or ^[OA
  '';
 
     shellAliases = {
-      update_os = "sudo nixos-rebuild switch";
+      update_os = "sudo nixos-rebuild switch --show-trace";
+      update_os_proxy = "update_os --option substituters https://mirrors.ustc.edu.cn/nix-channels/store";
+      os_git = "git --git-dir=$HOME/mistOS/ --work-tree=/etc/nixos";
     };
     
     zplug = {
