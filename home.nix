@@ -1,11 +1,16 @@
-{ config, pkgs, lib,... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "mist";
   home.homeDirectory = "/home/mist";
   home.sessionVariables = {
-    all_proxy = "socks://192.168.101.4:7890";
+    all_proxy = "socks://192.168.101.4:6153";
   };
+  
+#  xdg.configFile.nvim = {
+ #   source = /etc/nixos/packages/nvim;
+  #  recursive = true;
+  #};  
  
   programs.gh.enable = true; 
  
@@ -17,7 +22,7 @@
 
   programs.neovim = {
     enable = true;
-    extraConfig = lib.fileContents ./packages/nvim/init.lua;
+#    extraLuaConfig = lib.fileContents ./packages/nvim/init.lua;
   };
 
   programs.zsh = {
@@ -62,6 +67,7 @@ bindkey '\eOA' history-substring-search-up # or ^[OA
     neofetch
     zip
     nix-output-monitor
+    lua
   ];
   
   home.stateVersion = "23.11";
