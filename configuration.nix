@@ -10,6 +10,25 @@
       ./hardware-configuration.nix
     ];
   
+nixpkgs.config.allowUnfree = true;
+ services.xserver = {
+     enable = true;
+ 
+   
+     displayManager = {
+         sddm.enable = true;
+         defaultSession = "none+awesome";
+     };
+ 
+     windowManager.awesome = {
+       enable = true;
+       luaModules = with pkgs.luaPackages; [
+         luarocks # is the package manager for Lua modules
+         luadbi-mysql # Database abstraction layer
+       ];
+ 
+     };
+   };
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -22,12 +41,22 @@
   # Set your time zone.
   time.timeZone = "Europe/Amsterdam";
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+      inherit pkgs;
+    };
+  };
   # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  networking.proxy.default = "http://192.168.101.5:6152";
+  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+fonts.fontconfig.enable = true;
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = ["Hack"]; })
+  ];
+
   # console = {
   #   font = "Lat2-Terminus16";
   #   keyMap = "us";
@@ -72,10 +101,12 @@ programs.zsh.enable = true;
       alias unproxy='unset all_proxy'
     '';
     systemPackages = with pkgs; [
-      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      vim 
       wget
       openssh
       parted
+      google-chrome
+      xclip
     ];
   };  
 
@@ -90,8 +121,8 @@ programs.zsh.enable = true;
     enable = true;
     proxies.prx1 = {
       type = "socks5";
-      host = "192.168.101.4";
-      port = "7890";
+      host = "192.168.101.5";
+      port = "6152";
     };
   };
 

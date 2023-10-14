@@ -1,28 +1,25 @@
 { config, pkgs, lib, ... }:
+let
+  proxyAddr = "socks://192.168.101.5:6153";
+in 
 
 {
   home.username = "mist";
   home.homeDirectory = "/home/mist";
   home.sessionVariables = {
-    all_proxy = "socks://192.168.101.4:6153";
+    all_proxy = proxyAddr;
   };
   
-#  xdg.configFile.nvim = {
- #   source = /etc/nixos/packages/nvim;
-  #  recursive = true;
-  #};  
- 
   programs.gh.enable = true; 
  
   programs.git = {
     enable = true;
     userName = "Mist";
     userEmail = "mist.zzh@gmail.com";
-  };
-
-  programs.neovim = {
-    enable = true;
-#    extraLuaConfig = lib.fileContents ./packages/nvim/init.lua;
+    extraConfig = {
+      http.proxy = proxyAddr;
+      https.proxy = proxyAddr;
+    };
   };
 
   programs.zsh = {
@@ -67,7 +64,10 @@ bindkey '\eOA' history-substring-search-up # or ^[OA
     neofetch
     zip
     nix-output-monitor
+gcc
     lua
+    lua-language-server
+    kitty
   ];
   
   home.stateVersion = "23.11";
